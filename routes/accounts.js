@@ -17,6 +17,21 @@ router.get('/', async function(req, res, next) {
 
 });
 
+
+/* GET account details. */
+router.get('/:id', async function(req, res, next) {
+  let id = req.params.id;
+  let account = await models.Account.findOne({where:{id:id}});
+
+  res.json({
+   success: true,
+   message: 'Account retrived successfully!',
+   data: account,
+   errors: null
+  });
+
+});
+
 /* POST store an account. */
 router.post('/', async function(req, res, next) {
 
@@ -29,6 +44,23 @@ router.post('/', async function(req, res, next) {
    data: newAccount,
    errors: null
   });
+
+});
+
+
+
+/* PUT store an account. */
+router.put('/:id/update', async function(req, res, next) {
+  let id = req.params.id;
+  let formData = req.body;
+  let updatedAccount = await models.Account.update(formData, {where:{id:id}});
+
+ res.json({
+  success: true,
+  message: 'Account updated successfully!',
+  data: updatedAccount,
+  errors: null
+ });
 
 });
 
