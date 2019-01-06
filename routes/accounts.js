@@ -1,19 +1,44 @@
 var express = require('express');
 var router = express.Router();
-
+var Sequelize = require('sequelize');
+var Op = Sequelize.Op;
 var models = require('../models');
 
 /* GET accounts listing. */
 router.get('/', async function(req, res, next) {
 
-  let accounts = await models.Account.findAll();
+  var q    = req.query.q ? req.query.q : null;
+  var date_from = req.query.date_from ? req.query.date_from : null;
+  var date_to   = req.query.date_to ? req.query.date_to : null;
+  var conditions = {
+    where:{},
+    order: [
+      ['createdAt', 'DESC'],
+      ]
+    };
+    //if keyword search present
+    if(q){
+      conditions.where.name = { [Op.like]: '%'+q+'%' };
+    }
+    //if date filter present 
+    
 
-  res.json({
-   success: true,
-   message: 'Accounts retrived successfully!',
-   data: accounts,
-   errors: null
-  });
+
+  let accounts = await models.Account.findAll(conditions);
+
+  //fake delay to see loading 
+  setTimeout(()=>{
+
+    res.json({
+      success: true,
+      message: 'Accounts retrived successfully!',
+      data: accounts,
+      errors: null
+     });
+
+  }, 3000);
+
+  
 
 });
 
